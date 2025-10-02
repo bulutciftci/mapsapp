@@ -1,0 +1,9 @@
+@import "tailwindcss";
+
+.gmnoprint, .gm-control-active {
+  display: none !important;
+}
+
+.gm-style-iw-a{
+  display: none !important;
+}
