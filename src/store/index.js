@@ -11,6 +11,6 @@ export const store = configureStore({
     mode: modeSlice,
     route: routeSlice,
     myLocation: myLocationSlice,
-  },
+    },
 });
 export default store;

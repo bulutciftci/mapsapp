@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useJsApiLoader } from "@react-google-maps/api";
 import MapComponent from "./components/MapComponent";
 import SearchBar from "./components/SearchBar";
@@ -10,6 +10,7 @@ import { clearSelectedPlace } from "./store/searchSlice";
 import { clearSelectedBuilding } from "./store/searchBuildingSlice";
 import { clearRoute } from "./store/routeSlice";
 import RouteCard from "./components/RouteCard";
+import { setMyLocation } from "./store/myLocation";
 
 const libraries = ["places", "geometry"];
 
@@ -23,10 +24,11 @@ function App() {
   const mapRef = useRef(null);
   const { isLoaded } = useJsApiLoader({
     googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAPS_API_KEY,
-    libraries,
-  });
+    libraries,});
+
   const route = useSelector((state) => state.route.route);
   const mode = useSelector((state) => state.mode.mode);
+
 
   if (!isLoaded) {
     return <div>Harita yükleniyor...</div>;
@@ -36,7 +38,8 @@ function App() {
     <div>
       <SearchBar mapRef={mapRef} />
       <MapComponent mapRef={mapRef} />
-      <LocateButton mapRef={mapRef} infoExpanded={infoExpanded} />
+      {/* <LocateButton mapRef={mapRef} infoExpanded={infoExpanded}  onReEnableFollow={() => setAutoFollow(true)}/>
+  */}
       {route ? (
         <RouteCard
           routeInfo={route}

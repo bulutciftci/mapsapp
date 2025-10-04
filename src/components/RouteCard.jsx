@@ -14,7 +14,6 @@ const modeLabels = {
   BICYCLE: "BİSİKLET",
 };
 
-// Gelen mode değerini normalize et
 const normalizeMode = (mode) => {
   switch (mode) {
     case "DRIVING":
@@ -42,10 +41,8 @@ const calculateDistance = (meters) => {
 const RouteCard = ({ routeInfo, mode, onCancel }) => {
   if (!routeInfo) return null;
 
-  // Normalize edilen mode
   const normalizedMode = normalizeMode(mode);
 
-  // Parse route info
   let parsedRoute = null;
   try {
     parsedRoute = routeInfo ? JSON.parse(routeInfo) : null;
@@ -53,21 +50,31 @@ const RouteCard = ({ routeInfo, mode, onCancel }) => {
     console.error("Route parsing error:", e);
   }
 
-  // Süreyi dakika + saniye olarak hesapla
-  let durationMinutes = 0;
-  let durationSeconds = 0;
+  let formattedDuration = "";
   if (parsedRoute?.duration) {
-    const sec = parseInt(parsedRoute.duration.replace("s", ""), 10);
-    durationMinutes = Math.floor(sec / 60);
-    durationSeconds = sec % 60;
+    const totalSec = parseInt(parsedRoute.duration.replace("s", ""), 10);
+    const hours = Math.floor(totalSec / 3600);
+    const minutes = Math.floor((totalSec % 3600) / 60);
+    const seconds = totalSec % 60;
+
+    if (hours > 0) {
+      formattedDuration = `${hours} sa ${minutes} dk`;
+    } else if (minutes > 0) {
+      formattedDuration = `${minutes} dk ${
+        seconds > 0 ? `${seconds} sn` : ""
+      }`;
+    } else {
+      formattedDuration = `${seconds} sn`;
+    }
   }
 
   return (
     <div className="fixed bottom-0 left-0 w-full bg-[#ffffff] text-black rounded-t-2xl shadow-lg p-4 z-50">
-      {/* Üst kısım */}
       <div className="flex justify-between items-center mb-2">
         <div className="flex items-center gap-2">
-          {modeIcons[normalizedMode] || <Car className="w-5 h-5 text-gray-900" />}
+          {modeIcons[normalizedMode] || (
+            <Car className="w-5 h-5 text-gray-900" />
+          )}
           <h2 className="text-lg font-semibold">
             {modeLabels[normalizedMode] || normalizedMode}
           </h2>
@@ -81,19 +88,16 @@ const RouteCard = ({ routeInfo, mode, onCancel }) => {
         </button>
       </div>
 
-      {/* İçerik */}
       {parsedRoute && (
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-2xl font-bold">
-              {durationMinutes} dk {durationSeconds > 0 ? `${durationSeconds} sn` : ""}
-            </p>
+            <p className="text-2xl font-bold">{formattedDuration}</p>
             <p className="text-sm text-gray-600">
               {calculateDistance(parsedRoute.distanceMeters)}
             </p>
           </div>
           <div className="bg-blue-600 px-4 py-2 text-white border border-blue-500 rounded-lg text-sm font-medium">
-            Tahmini: {durationMinutes} dk {durationSeconds > 0 ? `${durationSeconds} sn` : ""}
+            Tahmini: {formattedDuration}
           </div>
         </div>
       )}

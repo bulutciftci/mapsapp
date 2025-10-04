@@ -25,7 +25,6 @@ const InfoCard = () => {
   const currentLocation = useSelector((state) => state.myLocation.center);
   const route = useSelector((state) => state.route.route);
 
-  // Mode değerini Google API'ye çevir
   const convertModeForAPI = useCallback((mode) => {
     const modeMap = {
       DRIVING: "DRIVE",
@@ -51,7 +50,6 @@ const InfoCard = () => {
     }
   }, [route]);
 
-  // Routing preference ayarı
   const modeSwitcher = useCallback((apiMode) => {
     if (apiMode === "DRIVE") return "TRAFFIC_AWARE";
     return "ROUTING_PREFERENCE_UNSPECIFIED";
@@ -66,7 +64,6 @@ const InfoCard = () => {
     }
   }, []);
 
-  // Rota hesaplama fonksiyonu
   async function SetRoute() {
     if (!selectedBuilding || !selectedBuilding.geometry) {
       setRouteError("Seçili bina bilgisi eksik");
@@ -141,7 +138,8 @@ const InfoCard = () => {
     }
   }
 
-  // Mode değişince rota varsa yeniden hesapla
+  
+
   useEffect(() => {
     if (route) {
       SetRoute();
@@ -162,13 +160,13 @@ const InfoCard = () => {
 
   const onToggle = useCallback(() => {
     setIsOpen((prev) => !prev);
-  }, []);
+    }, []);
 
   if (!selectedBuilding) return null;
 
   return (
     <div
-      className={`fixed bottom-0 left-0 right-0 bg-white rounded-t-3xl shadow-2xl z-50 transition-transform duration-300 ease-out ${
+      className={`fixed bottom-0 z-[999] left-0 right-0 bg-white rounded-t-3xl shadow-2xl transition-transform duration-300 ease-out ${
         isOpen ? "transform translate-y-0" : "transform translate-y-3/4"
       }`}
       role="dialog"
